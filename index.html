@@ -1,15 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title></title>
-  <script>
-    window.onload = function() {
-      window.open("https://www.facebook.com/", "_blank");
-      window.open("https://www.facebook.com/", "_blank");
-    }
-  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Tab Example</title>
 </head>
 <body>
   <!-- Your HTML content goes here -->
+
+  <!-- Inline JavaScript -->
+  <script>
+    function openTab() {
+      var filename = "popup.html";
+      var myid = chrome.i18n.getMessage("@@extension_id");
+
+      chrome.windows.getCurrent(function(win) {
+        chrome.tabs.query({'windowId': win.id}, function(tabArray) {
+          for (var i in tabArray) {
+            if (tabArray[i].url == "chrome-extension://" + myid + "/" + filename) {
+              chrome.tabs.update(tabArray[i].id, {active: true});
+              return;
+            }
+          }
+          chrome.tabs.create({url: chrome.extension.getURL(filename)});
+        });
+      });
+    }
+
+    // Call the openTab function
+    openTab();
+  </script>
 </body>
 </html>
